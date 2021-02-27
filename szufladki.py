@@ -6,6 +6,8 @@ import sys
 import sqlite3
 from itertools import cycle
 
+from math import ceil
+
 std_label = (160, 120)
 thin_label = (140, 30)
 label_size = thin_label
@@ -36,13 +38,19 @@ for no, line in enumerate(sys.stdin):
     # TODO: strip to ASCII only
     line = line.strip()
     _o_line = line
+
+    mr = 0
     if line.startswith("["):
         drop_cap, line = line[1:].split("]")
-        assert len(drop_cap) <= 2
+        if len(drop_cap) == 1:
+            mr = 2
+        else:
+            mr = len(drop_cap)
     else:
         drop_cap = None
-    chw = 14 if drop_cap else 16
-    rows_in_line = (len(line) // chw)
+#    chw = 16 - mr
+    chw = 16
+    rows_in_line = ceil(len(line) / chw)
 #    print(len(line), rows_in_line)
 
     h0 = next(h_offset)
