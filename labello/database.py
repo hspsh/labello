@@ -5,10 +5,15 @@ import peewee as pw
 
 db = pw.SqliteDatabase(os.environ.get("DB_PATH", "labello.db"))
 
+
 class Label(pw.Model):
     id = pw.PrimaryKeyField()
     raw = pw.CharField(null=True)
     last_edit = pw.DateTimeField()
+
+    class Meta:
+        database = db
+
 
 example = """
 N
