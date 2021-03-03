@@ -68,15 +68,22 @@ def label_editor(label_id=None):
     """Edit or create labels"""
     if request.method == "POST" and request.values.get("raw"):
         data = request.values.get("raw")
-        if label_id is None:
-            new_label = Label.create(raw=data, last_edit=datetime.now())
-            new_label.save()
-            label_id = new_label.id
-        else:
-            label = Label.select().where(Label.id == label_id).get()
-            label.raw = data
-            label.last_edit = datetime.now()
-            label.save()
+        if request.values.get("print"):
+            res = send_raw_to_printer(data, settings.printer_name)
+            flash(
+                f"sent {len(data)} bytes to printer {settings.printer_name}",
+                "success" if res == 0 else "error",
+            )
+        elif request.values.get("save"):
+            if label_id is None:
+                new_label = Label.create(raw=data, last_edit=datetime.now())
+                new_label.save()
+                return redirect(url_for('label_editor', label_id=new_label.id))
+            else:
+                label = Label.select().where(Label.id == label_id).get()
+                label.raw = data
+                label.last_edit = datetime.now()
+                label.save()
 
     if label_id is not None:
         label = Label.select().where(Label.id == label_id).get()
