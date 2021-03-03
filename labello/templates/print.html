@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Print label {{ label_id }}</h2>
+
+    <p>
+        <form action="" method="post">
+            {% for var in label_vars %}
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="input_{{var}}">{{var}}</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="input_{{var}}" 
+                    name="{{var}}" value="{{ label_vars[var] }}">
+                </div>
+            </div>
+            {% endfor %}
+            <div class="form-group">
+                <textarea class="form-control" style="font-family:monospace;" name="raw" rows="10" readonly>{{- rendered -}}</textarea>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Print" name="print" />
+            <input class="btn btn-outline-primary" type="submit" value="Preview" name="preview" />
+            <a class="btn btn-outline-secondary" href="/editor/{{ label_id }}">Edit</a>
+        </form>
+    </p>
+{% endblock %}
