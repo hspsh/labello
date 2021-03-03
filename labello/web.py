@@ -18,7 +18,8 @@ from flask import (
 
 from labello import settings
 from labello.database import db, Label
-from labello.label_templating import env as label_tpl, get_variables
+from labello.templating.loader import jinja_env as label_tpl, get_variables
+from labello.templating import epl
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -49,7 +50,7 @@ def after_request(error):
 
 def send_raw_to_printer(data, printer):
     with tempfile.NamedTemporaryFile(delete=False, suffix=".epl") as fp:
-        fp.write(data.encode())
+        fp.write(data.encode("ISO-8859-1"))
         fp.write("\n\n".encode())
         command = "lp -h 192.168.88.119:631 -d {} -o raw {}".format(printer, fp.name)
     logger.info(command)
@@ -94,8 +95,10 @@ def label_editor(label_id=None):
             )
     return render_template("editor.html", raw="", label_id=label_id, **common_vars_tpl)
 
+
 def sub_dict(somedict, somekeys, default=None):
-    return dict([ (k, somedict.get(k, default)) for k in somekeys ])
+    return dict([(k, somedict.get(k, default)) for k in somekeys])
+
 
 @app.route("/print/<label_id>", methods=["GET", "POST"])
 def print_template(label_id):
@@ -106,11 +109,13 @@ def print_template(label_id):
         label_ctx = sub_dict(request.values, label_vars, default="")
 
     template = label_tpl.loader.load(label_tpl, label_id)
+    # TODO: why are we not inhereting globals from jinja_env? fix this
+    template.globals.update(epl=epl)
     rendered = template.render(label_ctx)
 
     if request.method == "POST" and request.values.get("preview"):
         print(label_ctx)
-        return redirect(url_for('print_template', label_id=label_id, **label_ctx))
+        return redirect(url_for("print_template", label_id=label_id, **label_ctx))
 
     if request.method == "POST" and request.values.get("print"):
         data = rendered

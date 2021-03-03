@@ -1,8 +1,9 @@
 from jinja2 import Environment, BaseLoader, TemplateNotFound, meta
 from labello.database import Label
+from labello.templating import epl
 
 
-class MyLoader(BaseLoader):
+class DatabaseLoader(BaseLoader):
     def __init__(self):
         pass
 
@@ -15,9 +16,12 @@ class MyLoader(BaseLoader):
         return source, template_id, lambda: True
 
 
-env = Environment(
-    loader=MyLoader(),
+jinja_env = Environment(
+    loader=DatabaseLoader(),
 )
+
+jinja_env.globals["epl"] = epl
+print(jinja_env.globals)
 
 
 def get_variables(env, template_id):
