@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% macro label_card(label, owner='') -%}
+<div class="card">
+  <img class="card-img-top" src="..." alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">EPL label {{label.id}}</h5>
+    <p class="card-text">{{ label.raw }}</p>
+    <p class="card-text">
+      <span class="badge badge-pill badge-info">{{ label.format | default("EPL") }}</span>
+      <small class="text-muted">{{ label.last_edit.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+    </p>
+    <p class="card-text"><a href="/editor/{{ label.id }}">Edit label</a></p>  
+  </div>
+</div>
+{%- endmacro %}
+  
+{% block content %}
+
+<h2>Label gallery</h2>
+
+<div class="card-columns">
+  {% for label in labels -%}
+  {{ label_card(label) }}
+  {%- endfor %}
+</div>
+
+{% endblock %}
