@@ -13,7 +13,7 @@ poetry shell
 PYTHONPATH=. python helpers/db_create.py
 
 # run app in for developement in virtual env
-python -m labello
+FLASK_APP=labello.web FLASK_ENV=development flask run
 # or
 poetry run python -m labello
 ```
