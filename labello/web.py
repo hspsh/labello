@@ -1,4 +1,3 @@
-__version__ = "0.0.1"
 import logging
 import os
 import subprocess
@@ -25,14 +24,10 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.secret_key = 69420
-
-# cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+app.config.from_object('labello.settings')
 
 common_vars_tpl = {
-    "version": __version__,
-    "site_name": settings.name,
-    "base_url": settings.base_url,
+    "app": app.config.get_namespace('APP_')
 }
 
 
