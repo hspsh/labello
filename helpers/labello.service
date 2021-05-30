@@ -11,5 +11,7 @@ User=pi
 WorkingDirectory=/home/pi/labello
 ExecStart=python3 -m poetry run gunicorn -b 0.0.0.0 labello.web:app
 
+Environment="SECRET_KET=changeme"
+
 [Install]
 WantedBy=multi-user.target
