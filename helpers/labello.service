@@ -7,6 +7,7 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 RestartSec=1
+User=pi
 WorkingDirectory=/home/pi/labello
 ExecStart=python3 -m poetry run gunicorn -b 0.0.0.0 labello.web:app
 
