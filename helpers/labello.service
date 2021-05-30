@@ -8,7 +8,7 @@ Type=simple
 Restart=always
 RestartSec=1
 WorkingDirectory=/home/pi/labello
-ExecStart=/home/pi/.local/bin/poetry run gunicorn -b 0.0.0.0 labello.web:app
+ExecStart=python3 -m poetry run gunicorn -b 0.0.0.0 labello.web:app
 
 [Install]
 WantedBy=multi-user.target
