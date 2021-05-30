@@ -1,0 +1,18 @@
+[Unit]
+Description=Labello
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+WorkingDir=/home/pi/label-maker
+ExecStartPre=
+ExecStart="poetry run gunicorn -b 0.0.0.0 labello.web:app"
+ExecStartPost
+ExecStop=
+ExecReload=
+
+[Install]
+WantedBy=multi-user.target
