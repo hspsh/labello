@@ -1,4 +1,0 @@
-[M3]          6 mm          8 mm         10 mm
-[M3]         12 mm         14 mm         16 mm
-[M3]         20 mm         25 mm         30 mm
-[M3]          nuts        s-nuts       washers
