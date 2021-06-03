@@ -89,6 +89,10 @@ def label_editor(label_id=None):
                 label.name = name
                 label.last_edit = datetime.now()
                 label.save()
+                flash(
+                    f"Congrats, you managed to edit this label ;)",
+                    "info"
+                )
 
     if label_id:
         label = Label.select().where(Label.id == label_id).get()
