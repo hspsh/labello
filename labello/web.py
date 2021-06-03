@@ -64,7 +64,10 @@ def gallery():
 def label_editor(label_id=None):
     """Edit or create labels"""
     if request.method == "POST" and request.values.get("raw"):
+        app.logger.info(request.values)
         data = request.values.get("raw")
+        name = request.values.get("label_name")
+
         if request.values.get("print"):
             res = send_raw_to_printer(data, settings.printer_name)
             flash(
@@ -73,20 +76,25 @@ def label_editor(label_id=None):
             )
         elif request.values.get("save"):
             if label_id is None:
-                new_label = Label.create(raw=data, last_edit=datetime.now())
+                new_label = Label.create(raw=data, last_edit=datetime.now(), name=name)
                 new_label.save()
+                flash(
+                    f"New label created {new_label.name}",
+                    "success" if new_label else "error",
+                )
                 return redirect(url_for("label_editor", label_id=new_label.id))
             else:
                 label = Label.select().where(Label.id == label_id).get()
                 label.raw = data
+                label.name = name
                 label.last_edit = datetime.now()
                 label.save()
 
-    if label_id is not None:
+    if label_id:
         label = Label.select().where(Label.id == label_id).get()
         if label:
             return render_template(
-                "editor.html", raw=label.raw, label_id=label_id, **common_vars_tpl
+                "editor.html", raw=label.raw, label_id=label_id, name=label.name, **common_vars_tpl
             )
     return render_template("editor.html", raw="", label_id=label_id, **common_vars_tpl)
 
