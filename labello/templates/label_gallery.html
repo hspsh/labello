@@ -8,8 +8,7 @@
     <p class="card-text">
       <span class="badge badge-pill badge-info">{{ label.format | default("EPL") }}</span>
       <small class="text-muted">{{ label.last_edit.strftime('%Y-%m-%d %H:%M:%S') }}</small>
-    </p>
-    <p class="card-text"><a href="/editor/{{ label.id }}">Edit label</a></p>  
+    </p><a href="/editor/{{ label.id }}">Edit label </a><a href="/fork/{{ label.id }}"> Fork label</a></p>
   </div>
 </div>
 {%- endmacro %}
