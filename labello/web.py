@@ -154,3 +154,16 @@ def send_raw():
     return render_template(
         "send_raw.html", printer_name=settings.printer_name, **common_vars_tpl
     )
+
+
+@app.route("/fork/<label_id>", methods=["GET", "POST"])
+def fork_label(label_id):
+    """fork existing label"""
+    label = Label.select().where(Label.id == label_id).get()
+    new_label = Label.create(raw=label.raw, last_edit=datetime.now(), name=label.name)
+    new_label.save()
+    flash(
+        f"Label forked {new_label.name}",
+        "success" if new_label else "error",
+    )
+    return redirect(url_for("label_editor", label_id=new_label.id))
