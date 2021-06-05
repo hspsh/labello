@@ -13,22 +13,22 @@ from flask import (
     request,
     jsonify,
     abort,
+    send_file
 )
 
 from labello import settings
 from labello.database import db, Label
 from labello.templating.loader import jinja_env as label_tpl, get_variables
 from labello.templating import epl
+from labello.rendering.epl import Renderer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.config.from_object('labello.settings')
+app.config.from_object("labello.settings")
 
-common_vars_tpl = {
-    "app": app.config.get_namespace('APP_')
-}
+common_vars_tpl = {"app": app.config.get_namespace("APP_")}
 
 
 @app.before_request
@@ -89,16 +89,17 @@ def label_editor(label_id=None):
                 label.name = name
                 label.last_edit = datetime.now()
                 label.save()
-                flash(
-                    f"Congrats, you managed to edit this label ;)",
-                    "info"
-                )
+                flash(f"Congrats, you managed to edit this label ;)", "info")
 
     if label_id:
         label = Label.select().where(Label.id == label_id).get()
         if label:
             return render_template(
-                "editor.html", raw=label.raw, label_id=label_id, name=label.name, **common_vars_tpl
+                "editor.html",
+                raw=label.raw,
+                label_id=label_id,
+                name=label.name,
+                **common_vars_tpl,
             )
     return render_template("editor.html", raw="", label_id=label_id, **common_vars_tpl)
 
@@ -167,3 +168,24 @@ def fork_label(label_id):
         "success" if new_label else "error",
     )
     return redirect(url_for("label_editor", label_id=new_label.id))
+
+
+r = Renderer()
+
+
+@app.route("/api/render/<label_id>.png", methods=["GET"])
+def render_label(label_id):
+    label = Label.select().where(Label.id == label_id)
+    if label:
+        label = label.get()
+    else:
+        return abort(404)
+    
+    img = r.render(label.raw)
+    img_path = "label_{}.png".format(label_id)
+    img.save(app.config["APP_IMAGES_PATH"] + img_path)
+    return send_file("." + app.config["APP_IMAGES_PATH"] + img_path,
+            mimetype="image/png",
+            # attachment_filename=img_path,
+            as_attachment=True,
+        )

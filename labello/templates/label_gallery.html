@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% macro label_card(label, owner='') -%}
 <div class="card">
-  <img class="card-img-top" src="..." alt="Card image cap">
+  <img class="card-img-top" src="/api/render/{{ label.id }}.png" alt="render of label {{ label.name }}">
   <div class="card-body">
-    <h5 class="card-title">{{label.name}}</h5>
+    <h5 class="card-title">{{ label.name }}</h5>
     <p class="card-text">{{ label.raw }}</p>
     <p class="card-text">
       <span class="badge badge-pill badge-info">{{ label.format | default("EPL") }}</span>

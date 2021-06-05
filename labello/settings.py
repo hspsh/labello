@@ -11,6 +11,8 @@ APP_HOME_URL = "//hsp.sh"
 APP_WIKI_URL = "//wiki.hsp.sh/labello"
 APP_REPO_URL = "//github.com/hspsh/labello"
 
+APP_IMAGES_PATH = "./images/"
+
 printer_name = "Zebra_LP2824"
 
 SECRET_KEY = os.environ["SECRET_KEY"]
