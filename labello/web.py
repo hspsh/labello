@@ -116,10 +116,10 @@ def print_template(label_id):
     else:
         label_ctx = sub_dict(request.values, label_vars, default="")
 
-    template = label_tpl.loader.load(label_tpl, label_id)
-    # TODO: why are we not inhereting globals from jinja_env? fix this
-    template.globals.update(epl=epl)
     try:
+        template = label_tpl.loader.load(label_tpl, label_id)
+        # TODO: why are we not inhereting globals from jinja_env? fix this
+        template.globals.update(epl=epl)
         rendered = template.render(label_ctx)
     except Exception as exc:
         logger.error(exc)
