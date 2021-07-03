@@ -119,7 +119,15 @@ def print_template(label_id):
     template = label_tpl.loader.load(label_tpl, label_id)
     # TODO: why are we not inhereting globals from jinja_env? fix this
     template.globals.update(epl=epl)
-    rendered = template.render(label_ctx)
+    try:
+        rendered = template.render(label_ctx)
+    except Exception as exc:
+        logger.error(exc)
+        flash(
+            f"Error rendering {exc}",
+            "error",
+        )
+        render = None
 
     if request.method == "POST" and request.values.get("preview"):
         print(label_ctx)
