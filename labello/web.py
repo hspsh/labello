@@ -13,7 +13,7 @@ from flask import (
     request,
     jsonify,
     abort,
-    send_file
+    send_file,
 )
 
 from labello import settings
@@ -169,7 +169,9 @@ def send_raw():
 def fork_label(label_id):
     """fork existing label"""
     label = Label.select().where(Label.id == label_id).get()
-    new_label = Label.create(raw=label.raw, last_edit=datetime.now(), name=label.name)
+    new_label = Label.create(
+        raw=label.raw, last_edit=datetime.now(), name="Copy of {}".format(label.name)
+    )
     new_label.save()
     flash(
         f"Label forked {new_label.name}",
@@ -188,11 +190,12 @@ def render_label(label_id):
         label = label.get()
     else:
         return abort(404)
-    
+
     img = r.render(label.raw)
     img_path = "label_{}.png".format(label_id)
     img.save(app.config["APP_IMAGES_PATH"] + img_path)
-    return send_file("." + app.config["APP_IMAGES_PATH"] + img_path,
-            mimetype="image/png",
-            attachment_filename=img_path,
-        )
+    return send_file(
+        "." + app.config["APP_IMAGES_PATH"] + img_path,
+        mimetype="image/png",
+        attachment_filename=img_path,
+    )
