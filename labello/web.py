@@ -110,7 +110,16 @@ def sub_dict(somedict, somekeys, default=None):
 
 @app.route("/print/<label_id>", methods=["GET", "POST"])
 def print_template(label_id):
-    label_vars = get_variables(label_tpl, label_id)
+    try:
+        label_vars = get_variables(label_tpl, label_id)
+    except Exception as exc:
+        logger.error(exc)
+        flash(
+            f"Error loading label {label_id} {exc}",
+            "error",
+        )
+        label_vars = {}
+
     if request.method == "POST":
         label_ctx = sub_dict(request.form, label_vars, default="")
     else:
