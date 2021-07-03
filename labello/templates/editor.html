@@ -1,17 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2>Edit label {{ label_id }}</h2>
+<h2>Edit label {{ label_id }}</h2>
+<form class="row" action="" method="post">
+    <div class="col-sm">
+        <div class="form-group">
+            <label for="label_name" class="form-label">Label Name</label>
+            <input type="text" id="label_name" class="form-control" name="label_name" value="{{- name -}}">
+        </div>
+        <div class="form-group">
+            <textarea class="form-control" style="font-family:monospace;" name="raw" rows="10">{{- raw -}}</textarea>
+        </div>
 
-    <p>
-        <form action="" method="post">
-            <div class="form-group">
-                <label for="label_name" class="form-label">Label Name</label>
-                <input type="text" id="label_name" class="form-control" name="label_name" value="{{- name -}}"></div>
-            <div class="form-group">
-                <textarea class="form-control" style="font-family:monospace;" name="raw" rows="10">{{- raw -}}</textarea>
-            </div>
+    </div>
+    <div class="col-md-4">
+        <div class="p-2">
+            <img class="rounded border border-dark" style="box-shadow: 3px 5px 5px grey; width: 100%;"
+                src="/api/render/{{ label_id }}.png" alt="render of label {{ name }}">
+        </div>
+        <div class="form-group mt-3">
             <input class="btn btn-primary" type="submit" value="Save" name="save" />
             <a class="btn btn-outline-primary" href="/print/{{ label_id }}">Print</a>
-        </form>
-    </p>
+        </div>
+    </div>
+
+
+</form>
 {% endblock %}

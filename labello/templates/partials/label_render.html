@@ -1,0 +1,7 @@
+{% macro label_card(label, owner='') -%}
+  <img 
+    class="rounded border border-dark m-2" 
+    style="box-shadow: 3px 5px 5px grey;"
+    src="/api/render/{{ label.id }}.png" 
+    alt="render of label {{ label.name }}">
+{%- endmacro %}
