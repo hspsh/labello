@@ -194,6 +194,5 @@ def render_label(label_id):
     img.save(app.config["APP_IMAGES_PATH"] + img_path)
     return send_file("." + app.config["APP_IMAGES_PATH"] + img_path,
             mimetype="image/png",
-            # attachment_filename=img_path,
-            as_attachment=True,
+            attachment_filename=img_path,
         )
