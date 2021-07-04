@@ -25,7 +25,7 @@ from labello.rendering.epl import Renderer
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="web/templates")
 app.config.from_object("labello.settings")
 
 common_vars_tpl = {"app": app.config.get_namespace("APP_")}
