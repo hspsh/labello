@@ -21,6 +21,7 @@ from labello.database import db, Label
 from labello.templating.loader import jinja_env as label_tpl, get_variables
 from labello.templating import epl
 from labello.rendering.epl import Renderer
+from labello.printer import get_status
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -35,6 +36,7 @@ common_vars_tpl = {"app": app.config.get_namespace("APP_")}
 def before_request():
     app.logger.debug("connecting to db")
     db.connect()
+    common_vars_tpl["printer_status"] = get_status(settings.printer_name)
 
 
 @app.teardown_appcontext
