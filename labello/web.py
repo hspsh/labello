@@ -189,6 +189,20 @@ def fork_label(label_id):
     return redirect(url_for("label_editor", label_id=new_label.id))
 
 
+@app.route("/delete/<label_id>", methods=["GET", "POST"])
+def delete_label(label_id):
+    """delete existing label"""
+    if label_id in app.config.get("labels", {}).get("protected", []):
+        abort(401)
+    label = Label.select().where(Label.id == label_id).get()
+    label.delete_instance()
+    flash(
+        f"Deleted {label.name}",
+        "success" if label else "error",
+    )
+    return redirect(url_for("gallery"))
+
+
 r = Renderer()
 
 
