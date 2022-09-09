@@ -22,12 +22,14 @@ from labello.templating.loader import jinja_env as label_tpl, get_variables
 from labello.templating import epl
 from labello.rendering.epl import Renderer
 from labello.printer import get_status
+from labello.api import api
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__, template_folder="web/templates")
 app.config.from_object("labello.settings")
+app.register_blueprint(api, url_prefix='/api')
 
 common_vars_tpl = {"app": app.config.get_namespace("APP_")}
 
