@@ -16,9 +16,7 @@ class DatabaseLoader(BaseLoader):
         return source, template_id, lambda: True
 
 
-jinja_env = Environment(
-    loader=DatabaseLoader(),
-)
+jinja_env = Environment(loader=DatabaseLoader(),)
 
 jinja_env.globals["epl"] = epl
 print(jinja_env.globals)

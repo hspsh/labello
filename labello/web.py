@@ -117,8 +117,7 @@ def print_template(label_id):
     except Exception as exc:
         logger.error(exc)
         flash(
-            f"Error loading label {label_id} {exc}",
-            "error",
+            f"Error loading label {label_id} {exc}", "error",
         )
         label_vars = {}
 
@@ -135,8 +134,7 @@ def print_template(label_id):
     except Exception as exc:
         logger.error(exc)
         flash(
-            f"Error rendering {exc}",
-            "error",
+            f"Error rendering {exc}", "error",
         )
         render = None
 
@@ -185,8 +183,7 @@ def fork_label(label_id):
     )
     new_label.save()
     flash(
-        f"Label forked {new_label.name}",
-        "success" if new_label else "error",
+        f"Label forked {new_label.name}", "success" if new_label else "error",
     )
     return redirect(url_for("label_editor", label_id=new_label.id))
 
@@ -199,8 +196,7 @@ def delete_label(label_id):
     label = Label.select().where(Label.id == label_id).get()
     label.delete_instance()
     flash(
-        f"Deleted {label.name}",
-        "success" if label else "error",
+        f"Deleted {label.name}", "success" if label else "error",
     )
     return redirect(url_for("gallery"))
 
