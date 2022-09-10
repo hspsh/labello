@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 import peewee as pw
 
-db = pw.SqliteDatabase(os.environ.get("DB_PATH", "labello.db"))
+db = pw.SqliteDatabase(os.environ.get("APP_DB_PATH", "labello.db"))
 
 
 class Label(pw.Model):

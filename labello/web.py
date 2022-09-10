@@ -1,7 +1,5 @@
 import logging
 import os
-import subprocess
-import tempfile
 from datetime import datetime
 
 from flask import (
@@ -21,7 +19,7 @@ from labello.database import db, Label
 from labello.templating.loader import jinja_env as label_tpl, get_variables
 from labello.templating import epl
 from labello.rendering.epl import Renderer
-from labello.printer import get_status
+from labello.printer import get_status, send_raw as send_raw_to_printer
 from labello.api import api
 
 logging.basicConfig(level=logging.INFO)
@@ -29,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__, template_folder="web/templates")
 app.config.from_object("labello.settings")
-app.register_blueprint(api, url_prefix='/api')
+app.register_blueprint(api, url_prefix="/api")
 
 common_vars_tpl = {"app": app.config.get_namespace("APP_")}
 
@@ -45,16 +43,6 @@ def before_request():
 def after_request(error):
     app.logger.debug("closing db")
     db.close()
-
-
-def send_raw_to_printer(data, printer):
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".epl") as fp:
-        fp.write(data.encode("ISO-8859-1"))
-        fp.write("\n\n".encode())
-        command = "lp -h 192.168.88.119:631 -d {} -o raw {}".format(printer, fp.name)
-    logger.info(command)
-    res = subprocess.call(command, shell=True)
-    return res
 
 
 @app.route("/")
@@ -138,7 +126,7 @@ def print_template(label_id):
         flash(
             f"Error rendering {exc}", "error",
         )
-        render = None
+        rendered = None
 
     if request.method == "POST" and request.values.get("preview"):
         print(label_ctx)
