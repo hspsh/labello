@@ -16,7 +16,7 @@ def get_status(printer=""):
 
 
 def send_raw(data, printer):
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".epl") as fp:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".zpl") as fp:
         fp.write(data.encode("ISO-8859-1"))  # magic encode
         fp.write("\n\n".encode())
         command = "lp -h {} -d {} -o raw {}".format(HOST, printer, fp.name)

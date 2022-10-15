@@ -1,6 +1,7 @@
 import logging
 import os
 from datetime import datetime
+import shutil
 
 from flask import (
     Flask,
@@ -18,7 +19,7 @@ from labello import settings
 from labello.database import db, Label
 from labello.templating.loader import jinja_env as label_tpl, get_variables
 from labello.templating import epl
-from labello.rendering.epl import Renderer
+from labello.rendering.zpl import Renderer
 from labello.printer import get_status, send_raw as send_raw_to_printer
 from labello.api import api
 
@@ -77,6 +78,12 @@ def label_editor(label_id=None):
                 return redirect(url_for("label_editor", label_id=new_label.id))
             else:
                 label = Label.select().where(Label.id == label_id).get()
+                
+                img_name = "label_{}.png".format(label_id)
+                img_path = app.config["APP_IMAGES_PATH"] + img_name
+                if os.path.exists(img_path):
+                    os.remove(img_path)
+                
                 label.raw = data
                 label.name = name
                 label.last_edit = datetime.now()
@@ -185,6 +192,12 @@ def delete_label(label_id):
         abort(401)
     label = Label.select().where(Label.id == label_id).get()
     label.delete_instance()
+    
+    img_name = "label_{}.png".format(label_id)
+    img_path = app.config["APP_IMAGES_PATH"] + img_name
+    if os.path.exists(img_path):
+        os.remove(img_path)
+    
     flash(
         f"Deleted {label.name}", "success" if label else "error",
     )
@@ -193,7 +206,6 @@ def delete_label(label_id):
 
 r = Renderer()
 
-
 @app.route("/api/render/<label_id>.png", methods=["GET"])
 def render_label(label_id):
     label = Label.select().where(Label.id == label_id)
@@ -201,12 +213,17 @@ def render_label(label_id):
         label = label.get()
     else:
         return abort(404)
-
-    img = r.render(label.raw)
-    img_path = "label_{}.png".format(label_id)
-    img.save(app.config["APP_IMAGES_PATH"] + img_path)
+        
+    img_name = "label_{}.png".format(label_id)
+    img_path = app.config["APP_IMAGES_PATH"] + img_name
+    
+    if not os.path.exists(img_path):
+        img = r.render(label.raw)    
+        with open(img_path, 'wb') as out_file: 
+            shutil.copyfileobj(img, out_file)
+            
     return send_file(
-        "." + app.config["APP_IMAGES_PATH"] + img_path,
+        "." + img_path,
         mimetype="image/png",
         attachment_filename=img_path,
     )
