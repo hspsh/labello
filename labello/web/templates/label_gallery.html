@@ -5,7 +5,7 @@
   <div class="card-body">
     <h5 class="card-title">{{ label.name }}</h5>
     <p class="card-text">
-      <span class="badge badge-pill badge-info">{{ label.format | default("EPL") }}</span>
+      <span class="badge badge-pill badge-info">{{ label.format | default("ZPL") }}</span>
       <small class="text-muted">{{ label.last_edit.strftime('%Y-%m-%d %H:%M:%S') }}</small>
     </p><a class="btn btn-outline-primary" href="/print/{{ label.id }}">Print</a> <a class="btn btn-outline-secondary" href="/editor/{{ label.id }}">Edit</a></p>
   </div>
@@ -14,7 +14,8 @@
   
 {% block content %}
 
-<h2>Label gallery</h2>
+
+<h2 class="py-3">Label gallery</h2>
 
 <div class="card-columns">
   {% for label in labels -%}
